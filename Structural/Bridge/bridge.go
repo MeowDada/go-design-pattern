@@ -1,28 +1,57 @@
-package main
+package bridge
 
 import (
 	"fmt"
-	language "github.com/MeowDada/go-design-pattern/Structural/Bridge/pkg"
 )
 
-type TaiwanPeople struct {
-	GreetingStyle language.Greeting
+type GreetingMethod interface {
+	Greet()
 }
 
-func (tp *TaiwanPeople) SayHello() {
-	fmt.Println(tp.GreetingStyle.Hello())
+type GreetingLanguage interface {
+	GreetWord() string
 }
 
-func (tp *TaiwanPeople) SayThanks() {
-	fmt.Println(tp.GreetingStyle.Thanks())
+type English struct {}
+
+func NewEnglish() *English { return &English{} }
+
+func (e *English) GreetWord() string {
+	return "Hello"
 }
 
-func main() {
+type Chinese struct {}
 
-	people := TaiwanPeople {
-		GreetingStyle: &language.ChineseGreeting{},
+func NewChinese() *Chinese { return &Chinese{} }
+
+func (c *Chinese) GreetWord() string {
+	return "你好"
+}
+
+type ViaEmail struct {
+	GreetingLanguage
+}
+
+func NewViaEmail(language GreetingLanguage) *ViaEmail {
+	return &ViaEmail {
+		GreetingLanguage: language,
 	}
+}
 
-	people.SayHello()
-	people.SayThanks()
+func (ve *ViaEmail) Greet() {
+	fmt.Printf("%s via email", ve.GreetWord())
+}
+
+type ViaTalk struct {
+	GreetingLanguage
+}
+
+func NewViaTalk(language GreetingLanguage) *ViaTalk {
+	return &ViaTalk {
+		GreetingLanguage: language,
+	}
+}
+
+func (vt *ViaTalk) Greet() {
+	fmt.Printf("%s via talking", vt.GreetWord())
 }
